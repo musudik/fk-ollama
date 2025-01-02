@@ -1,0 +1,8 @@
+name = "ai"
+compatibility_date = "2023-01-01"
+
+[vars]
+VITE_CLIENT_URL = "http://localhost:5173"
+
+[env.production.vars]
+VITE_CLIENT_URL = "http://207.180.235.87:5173"

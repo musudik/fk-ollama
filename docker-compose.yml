@@ -1,0 +1,17 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "3002:3002"
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      #- OLLAMA_HOST=http://172.17.0.1:11434  # Docker host IP on Linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ollama-network
+
+networks:
+  ollama-network:
+    driver: bridge
