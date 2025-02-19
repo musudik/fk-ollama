@@ -1,17 +1,29 @@
-version: '3'
 services:
-  app:
-    build: .
-    ports:
-      - "3002:3002"
+  fk-ollama:
+    build: ./fk-ollama
+    restart: unless-stopped
     environment:
+      #- OLLAMA_HOST=http://ollama:11434  # Connect to the already running Ollama container
       - OLLAMA_HOST=http://host.docker.internal:11434
-      #- OLLAMA_HOST=http://172.17.0.1:11434  # Docker host IP on Linux
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    expose:
+      - "3002"
     networks:
-      - ollama-network
+      - app_network
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    depends_on:
+      - fk-ollama
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - app_network
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs
 
 networks:
-  ollama-network:
+  app_network:
     driver: bridge
