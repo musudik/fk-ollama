@@ -12,11 +12,29 @@ console.log(`Using environment: ${environment}`);
 console.log(`Using environment file: ${envPath}`);
 dotenv.config({ path: envPath });
 
+// Allowed origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://leonaidoo.com',
+  'https://deccanchargers.de',
+  'https://fkgpt.dev',
+  'https://onemunich365.de',
+  'https://iquiz.info',
+  'https://takeaway24.info',
+  'https://thinkeuros.de'
+];
+
+// Initialize Hono app
 const app = new Hono();
 
-// CORS setup
+// CORS setup with dynamic origin handling
 app.use("/*", cors({
-  origin: environment === 'production' ? "http://207.180.235.87:5173" : "http://localhost:5173",
+  origin: (origin) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return origin; // Allow request if the origin is in the list
+    }
+    return ""; // Block request if origin is not allowed
+  },
   credentials: true
 }));
 
